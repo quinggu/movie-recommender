@@ -3,6 +3,7 @@
 namespace App\Tests\Application\Movie;
 
 use App\Application\Movie\MovieRecommender;
+use App\Domain\Movie\Movie;
 use App\Infrastructure\Movie\InMemoryMovieRepository;
 use PHPUnit\Framework\TestCase;
 
@@ -20,19 +21,33 @@ class MovieRecommenderTest extends TestCase
     {
         $movies = $this->movieRecommender->getRandomMovies();
         $this->assertCount(3, $movies);
+        $this->assertContainsOnlyInstancesOf(Movie::class, $movies);
+        foreach ($movies as $movie) {
+            $this->assertIsString($movie->getTitle());
+        }
     }
 
     public function testGetMoviesStartingWithWWithEvenLength(): void
     {
         $movies = $this->movieRecommender->getMoviesStartingWithWWithEvenLength();
-        $this->assertCount(1, $movies);
-        $this->assertEquals("Władca Pierścieni: Powrót króla", $movies[0]->getTitle());
+
+        $expectedTitles = [
+            "Whiplash",
+            "Wyspa tajemnic",
+            "Władca Pierścieni: Drużyna Pierścienia",
+        ];
+
+        $this->assertCount(3, $movies);
+        foreach ($movies as $movie) {
+            $this->assertContains($movie->getTitle(), $expectedTitles);
+        }
     }
 
     public function testGetMoviesWithMultipleWords(): void
     {
         $movies = $this->movieRecommender->getMoviesWithMultipleWords();
         $this->assertGreaterThan(0, count($movies));
+
         foreach ($movies as $movie) {
             $this->assertTrue(str_word_count($movie->getTitle()) > 1);
         }

@@ -8,7 +8,8 @@ readonly class MovieRecommender
 {
 
     public function __construct(private MovieRepositoryInterface $movieRepository)
-    {}
+    {
+    }
 
     public function getRandomMovies(): array
     {

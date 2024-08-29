@@ -5,7 +5,8 @@ namespace App\Domain\Movie;
 readonly class Movie
 {
     public function __construct(private string $title)
-    {}
+    {
+    }
 
     public function getTitle(): string
     {
